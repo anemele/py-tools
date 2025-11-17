@@ -9,7 +9,6 @@ from typing import Iterable
 
 from win32com import client
 
-
 # available format code
 # wdFormatDocument = 0
 # wdFormatDocument97 = 0

@@ -14,6 +14,12 @@ dependencies = [
 [project.scripts]
 an2cn = "py_tools.an2cn:main"
 doc2pdf = "py_tools.doc2pdf:main"
+md5sum = "py_tools.hashsum:md5"
+sha1sum = "py_tools.hashsum:sha1"
+sha224sum = "py_tools.hashsum:sha224"
+sha256sum = "py_tools.hashsum:sha256"
+sha384sum = "py_tools.hashsum:sha384"
+sha512sum = "py_tools.hashsum:sha512"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]
