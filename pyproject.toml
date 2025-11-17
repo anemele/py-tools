@@ -26,6 +26,7 @@ du = "py_tools.du:main"
 lse = "py_tools.lse:main"
 fixv = "py_tools.fixv:main"
 pyenv = "py_tools.pyenv:main"
+ssn = "py_tools.ssn:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]
