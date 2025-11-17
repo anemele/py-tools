@@ -1,5 +1,5 @@
 [project]
-name = "py-cvt"
+name = "py-tools"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -12,8 +12,8 @@ dependencies = [
 ]
 
 [project.scripts]
-an2cn = "py_cvt.an2cn:main"
-doc2pdf = "py_cvt.doc2pdf:main"
+an2cn = "py_tools.an2cn:main"
+doc2pdf = "py_tools.doc2pdf:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]

@@ -1,6 +1,6 @@
 import pytest
 
-from py_cvt.an2cn import convert
+from py_tools.an2cn import convert
 
 
 def test_mode():
