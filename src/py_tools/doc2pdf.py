@@ -74,7 +74,3 @@ def main():
         filter(os.path.isfile, chain.from_iterable(map(glob.iglob, args_file))),
     )
     convert(paths)
-
-
-if __name__ == "__main__":
-    main()

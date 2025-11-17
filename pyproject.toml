@@ -20,6 +20,7 @@ sha224sum = "py_tools.hashsum:sha224"
 sha256sum = "py_tools.hashsum:sha256"
 sha384sum = "py_tools.hashsum:sha384"
 sha512sum = "py_tools.hashsum:sha512"
+rn = "py_tools.rename:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]
