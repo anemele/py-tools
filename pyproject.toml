@@ -3,13 +3,9 @@ name = "py-tools"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Jason Swift", email = "anemele@outlook.com" }
-]
+authors = [{ name = "Jason Swift", email = "anemele@outlook.com" }]
 requires-python = ">=3.12"
-dependencies = [
-    "pywin32>=311",
-]
+dependencies = ["pywin32>=311"]
 
 [project.scripts]
 an2cn = "py_tools.an2cn:main"
@@ -21,15 +17,22 @@ sha256sum = "py_tools.hashsum:sha256"
 sha384sum = "py_tools.hashsum:sha384"
 sha512sum = "py_tools.hashsum:sha512"
 rn = "py_tools.rename:main"
+pyver = "py_tools.pyver:main"
+scanip = "py_tools.scanip:main"
+stat = "py_tools.stat:main"
+subrun = "py_tools.subrun:main"
+utime = "py_tools.utime:main"
+du = "py_tools.du:main"
+lse = "py_tools.lse:main"
+fixv = "py_tools.fixv:main"
+pyenv = "py_tools.pyenv:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = [
-    "pytest>=9.0.1",
-]
+dev = ["pytest>=9.0.1"]
 
 [tool.ruff.lint]
 extend-select = ['I']
