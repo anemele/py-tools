@@ -5,28 +5,39 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Jason Swift", email = "anemele@outlook.com" }]
 requires-python = ">=3.12"
-dependencies = ["pywin32>=311"]
+dependencies = [
+    "pywin32>=311 ; sys_platform == 'win32'",
+]
 
 [project.scripts]
+# converters
 an2cn = "py_tools.an2cn:main"
+ssn = "py_tools.ssn:main"
 doc2pdf = "py_tools.doc2pdf:main"
+
+# hashsum aliases
 md5sum = "py_tools.hashsum:md5"
 sha1sum = "py_tools.hashsum:sha1"
 sha224sum = "py_tools.hashsum:sha224"
 sha256sum = "py_tools.hashsum:sha256"
 sha384sum = "py_tools.hashsum:sha384"
 sha512sum = "py_tools.hashsum:sha512"
+
+# file system tools
 rn = "py_tools.rename:main"
-pyver = "py_tools.pyver:main"
-scanip = "py_tools.scanip:main"
 stat = "py_tools.stat:main"
 subrun = "py_tools.subrun:main"
 utime = "py_tools.utime:main"
 du = "py_tools.du:main"
 lse = "py_tools.lse:main"
+
+# python related tools
 fixv = "py_tools.fixv:main"
 pyenv = "py_tools.pyenv:main"
-ssn = "py_tools.ssn:main"
+pyver = "py_tools.pyver:main"
+
+# net tools
+scanip = "py_tools.scanip:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]
