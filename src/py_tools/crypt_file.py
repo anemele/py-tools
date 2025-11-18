@@ -44,8 +44,10 @@ class MyBase64:
         if seed is None:
             seed = SEED
 
+        old_state = random.getstate()
         random.seed(sha256(seed.encode()).digest())
         random.shuffle(my_chars)
+        random.setstate(old_state)
 
         self.__trans_table_e = {ord(std): my for std, my in zip(chars, my_chars)}
         self.__trans_table_d = {ord(my): std for std, my in zip(chars, my_chars)}
