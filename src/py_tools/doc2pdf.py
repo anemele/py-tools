@@ -2,8 +2,8 @@
 
 import platform
 
-if platform.platform() != "Windows":
-    print("only support with Windows Word")
+if platform.system() != "Windows":
+    print("only support Windows, requires MS Word")
     exit(1)
 
 import glob
