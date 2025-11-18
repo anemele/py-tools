@@ -1,22 +1,16 @@
 [project]
 name = "py-tools"
 version = "0.1.0"
-description = "Add your description here"
+description = "Tools for daily use written in Python"
 readme = "README.md"
 authors = [{ name = "Jason Swift", email = "anemele@outlook.com" }]
 requires-python = ">=3.12"
-dependencies = [
-    "psutil>=7.1.3",
-    "pywin32>=311 ; sys_platform == 'win32'",
-]
+dependencies = []
 
 [project.scripts]
 # converters
 an2cn = "py_tools.an2cn:main"
 ssn = "py_tools.ssn:main"
-fib = "py_tools.fib:main"
-
-doc2pdf = "py_tools.doc2pdf:main"
 
 # hashsum aliases
 md5sum = "py_tools.hashsum:md5"
@@ -26,7 +20,7 @@ sha256sum = "py_tools.hashsum:sha256"
 sha384sum = "py_tools.hashsum:sha384"
 sha512sum = "py_tools.hashsum:sha512"
 
-# file system tools
+# file system
 rn = "py_tools.rename:main"
 stat = "py_tools.stat:main"
 subrun = "py_tools.subrun:main"
@@ -34,13 +28,9 @@ utime = "py_tools.utime:main"
 du = "py_tools.du:main"
 lse = "py_tools.lse:main"
 
-# python related tools
-fixv = "py_tools.fixv:main"
+# python related
 pyenv = "py_tools.pyenv:main"
 pyver = "py_tools.pyver:main"
-
-# net tools
-scanip = "py_tools.scanip:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]
