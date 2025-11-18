@@ -27,6 +27,7 @@ subrun = "py_tools.subrun:main"
 utime = "py_tools.utime:main"
 du = "py_tools.du:main"
 lse = "py_tools.lse:main"
+cf = "py_tools.crypt_file:main"
 
 # python related
 pyenv = "py_tools.pyenv:main"
