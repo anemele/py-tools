@@ -31,7 +31,7 @@ def validate_18(id18: str) -> str:
     ssn = id18[:17] + n18
     if n18 == id18[17].upper():
         return ssn
-    return f"校验位错误，正确的号码是 {ssn}"
+    return f"× {ssn}"
 
 
 def cvt_15_to_18(id15: str) -> str:

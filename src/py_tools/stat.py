@@ -6,7 +6,6 @@
 
 # This bug is fixed in 3.12.2
 
-import argparse
 import glob
 import os
 import time
@@ -30,12 +29,13 @@ def stat_file(path: str) -> str:
 
 
 def readable_size(size: float) -> str:
-    u = ""
-    for u in ",K,M,G,T,P,E".split(","):
+    if size < 1024:
+        return f"{size:0f} B"
+    for u in "KMGTP":
         if size < 1024:
-            break
+            return f"{size:.2f} {u}B"
         size /= 1024
-    return f"{size:.2f} {u}B"
+    return f"{size:.2f} EB"
 
 
 def readable_date(second: float):
@@ -43,6 +43,8 @@ def readable_date(second: float):
 
 
 def main():
+    import argparse
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("file", type=str, nargs="+", help="")
     args = parser.parse_args()

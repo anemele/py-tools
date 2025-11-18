@@ -38,12 +38,9 @@ def _inform(
 
 
 def rename_random(path: Path):
-    def rng(
-        chars: Sequence[str] = string.ascii_lowercase + string.digits,
-        leng: int = 6,
-    ):
-        """random name generator"""
-        char_list = random.choices(chars, k=leng)
+    def rng():
+        chars = string.ascii_lowercase + string.digits
+        char_list = random.choices(chars, k=6)
         return "".join(char_list)
 
     while True:
@@ -66,7 +63,7 @@ def rename_hashsum(path: Path, alg: Algo):
         return
 
     hashsum = hashlib.new(alg, content)
-    new_path = path.parent / (hashsum.hexdigest() + path.suffix)
+    new_path = path.with_stem(hashsum.hexdigest())
 
     if new_path == path or new_path.exists():
         _inform(path, new_path, "exists")

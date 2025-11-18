@@ -1,11 +1,16 @@
 """convert Word file (.doc, .docx) to PDF file (.pdf)"""
 
-import argparse
+import platform
+
+if platform.platform() != "Windows":
+    print("only support with Windows Word")
+    exit(1)
+
 import glob
 import os.path
 from itertools import chain
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from win32com import client
 
@@ -58,6 +63,8 @@ def convert(paths: Iterable[Path]) -> None:
 
 
 def main():
+    import argparse
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "file",
@@ -67,7 +74,7 @@ def main():
     )
 
     args = parser.parse_args()
-    args_file: list[str] = args.file  # type:ignore
+    args_file: Sequence[str] = args.file  # type:ignore
 
     paths = map(
         Path,
