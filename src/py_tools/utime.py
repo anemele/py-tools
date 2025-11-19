@@ -13,23 +13,20 @@ import sys
 import time
 from itertools import chain
 from pathlib import Path
-from typing import Iterable, Optional, Sequence, Tuple
-
-TIME_FORMAT = "%y %m %d %H %M %S"
+from typing import Iterable, Sequence
 
 
-def get_timestamp(ftime: Optional[str]) -> float:
+def get_timestamp(ftime: str | None) -> float | None:
     if ftime is None:
         return time.time()
     try:
-        ptime = time.strptime(ftime, TIME_FORMAT)
+        ptime = time.strptime(ftime, "%y %m %d %H %M %S")
         return time.mktime(ptime)
-    except ValueError as e:
-        print(f"[Warn] {e}\nuse now time instead.")
-        return time.time()
+    except ValueError:
+        return
 
 
-def set_utime(paths: Iterable[Path], timestamp: float) -> Tuple[int, int]:
+def set_utime(paths: Iterable[Path], timestamp: float) -> tuple[int, int]:
     count = 0
     succ = 0
     for succ, path in enumerate(paths, 1):
@@ -66,6 +63,11 @@ def main():
     only_file: bool = args.only_file
     only_dir: bool = args.only_dir
 
+    timestamp = get_timestamp(ftime)
+    if timestamp is None:
+        print("Invalid time format.")
+        return
+
     paths: Iterable[Path]
     if is_recursive:
         paths = chain(items, *(p.rglob("*") for p in items))
@@ -77,6 +79,5 @@ def main():
     elif only_dir:
         paths = filter(lambda p: p.is_dir(), paths)
 
-    timestamp = get_timestamp(ftime)
-    s, c = set_utime(paths, timestamp=timestamp)
+    s, c = set_utime(paths, timestamp)
     print(f"\rDone: {s}/{c}")
