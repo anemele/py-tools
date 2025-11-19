@@ -11,35 +11,24 @@ import os
 import time
 from itertools import chain
 
+from ._common import human_readable_size
+
 
 def stat_file(path: str) -> str:
-    stat = os.stat(path)
-    info = (
-        ("-" * 40, ""),
-        ("path", path),
-        ("inode", stat.st_ino),
-        ("dev", stat.st_dev),
-        ("nlink", stat.st_nlink),
-        ("size", readable_size(stat.st_size)),
-        ("ctime", readable_date(stat.st_birthtime)),
-        ("mtime", readable_date(stat.st_mtime)),
-        ("atime", readable_date(stat.st_atime)),
-    )
-    return "\n".join(f"{k:6}{v}" for k, v in info)
+    info = os.stat(path)
+    fmt_info = f"""\
+  File: {path}
+  Size: {info.st_size} ({human_readable_size(info.st_size)})
+Device: {info.st_dev}  Inode: {info.st_ino}  Links: {info.st_nlink}
+Access: {readable_date(info.st_atime)}
+Modify: {readable_date(info.st_mtime)}
+ Birth: {readable_date(info.st_birthtime)}
+"""
+    return fmt_info
 
 
-def readable_size(size: float) -> str:
-    if size < 1024:
-        return f"{size:0f} B"
-    for u in "KMGTP":
-        if size < 1024:
-            return f"{size:.2f} {u}B"
-        size /= 1024
-    return f"{size:.2f} EB"
-
-
-def readable_date(second: float):
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(second))
+def readable_date(second: float) -> str:
+    return time.strftime("%Y-%m-%d %H:%M:%S %z", time.localtime(second))
 
 
 def main():
@@ -48,8 +37,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("file", type=str, nargs="+", help="")
     args = parser.parse_args()
-    # print(args)
-    # return
+
     files = chain.from_iterable(map(glob.iglob, args.file))
     for file in files:
         print(stat_file(file))

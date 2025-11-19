@@ -8,6 +8,8 @@ import os.path as osp
 import time
 from typing import Iterable, Set
 
+from ._common import human_readable_size
+
 type T_OS_WALKER = tuple[str, list[str], list[str]]
 type T_ITEM = tuple[int, int, int]
 
@@ -45,18 +47,6 @@ def trim_hardlinks_from_root(inode_set: Set[int], root: T_OS_WALKER) -> T_OS_WAL
     return r, d, new_f
 
 
-def human_readable_size(size: float) -> str:
-    units = tuple(f"{x}B" for x in ",K,M,G,T,P,E,Z,Y,B,N,D,C".split(","))
-    max_idx = len(units) - 1
-    carry = 1024
-    idx = 0
-    while idx < max_idx and size >= carry:
-        idx += 1
-        size /= carry
-
-    return f"{size:.2f} {units[idx]}"
-
-
 def run(director: str, recursive: bool = True):
     print("\n", osp.abspath(director), "\n")
     begin = time.perf_counter()
@@ -79,15 +69,11 @@ def run(director: str, recursive: bool = True):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "dir",
-        type=str,
-        nargs="?",
-        default=".",
-        help="default: current directory",
+        "top", nargs="?", default=".", help="default: current directory"
     )
     parser.add_argument(
         "-R",
-        "--no-recursive",
+        "--not-recursive",
         action="store_true",
         help="don't recurse into subdirectories",
     )
@@ -95,10 +81,11 @@ def main():
     args = parser.parse_args()
     # print(args)
     # return
-    arg_dir: str = args.dir
-    arg_R: bool = args.no_recursive
 
-    if not osp.isdir(arg_dir):
-        print(f"not a dir: {arg_dir}")
+    top: str = args.top
+    not_r: bool = args.not_recursive
+
+    if not osp.isdir(top):
+        print(f"not a dir: {top}")
     else:
-        run(arg_dir, not arg_R)
+        run(top, not not_r)
