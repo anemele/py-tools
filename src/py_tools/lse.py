@@ -2,7 +2,6 @@
 
 """List file extensions in a directory."""
 
-import argparse
 import math
 import os
 import sys
@@ -54,10 +53,6 @@ def list_types(directory: str, recursive: bool) -> tuple[Counter[str], int]:
     return counter, count
 
 
-def bit_length_10(num: int) -> int:
-    return math.ceil(math.log10(num + 1))
-
-
 def pprint(counter: Counter, count: int):
     count_DIR = counter.pop(DIR_KEY)
     count_FILE = count - count_DIR
@@ -66,7 +61,7 @@ def pprint(counter: Counter, count: int):
     if len(ret) == 0:
         SPAN_WIDTH = 0
     else:
-        SPAN_WIDTH = bit_length_10(ret[-1][1])
+        SPAN_WIDTH = math.ceil(math.log10(ret[-1][1] + 1))
     print("-" * (SPAN_WIDTH + 18))  # + length of `counting `
     for e, c in ret:
         print(f"    {c:>{SPAN_WIDTH}d}  {e}")
@@ -86,7 +81,9 @@ def run(directory: str, recursive: bool):
     print(f" cost time: {time.perf_counter() - begin:.3f}s")
 
 
-def parse_args():
+def main():
+    import argparse
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "dir",
@@ -101,12 +98,7 @@ def parse_args():
         action="store_true",
         help="recursive",
     )
-
-    return parser.parse_args()
-
-
-def main():
-    args = parse_args()
+    args = parser.parse_args()
     # print(args)
     # return
 

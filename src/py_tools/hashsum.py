@@ -1,12 +1,12 @@
 #!/usr/bin/env python3.12
 
 import argparse
-import glob
 import hashlib
 import os.path as op
 import sys
 from dataclasses import dataclass
-from itertools import chain
+
+from ._common import glob_paths
 
 
 @dataclass
@@ -61,7 +61,7 @@ def gen_main(alg):
 
         if len(files) == 0 and not sys.stdin.isatty():
             files = sys.stdin.read().splitlines()
-        files = filter(op.isfile, chain.from_iterable(map(glob.iglob, files)))
+        files = glob_paths(files)
 
         if is_check:
             for file in files:

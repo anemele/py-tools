@@ -11,9 +11,10 @@ os.utime(path, time: (atime, mtime)=None, *, ...)
 import os
 import sys
 import time
-from itertools import chain
 from pathlib import Path
 from typing import Iterable, Sequence
+
+from ._common import glob_paths
 
 
 def get_timestamp(ftime: str | None) -> float | None:
@@ -45,7 +46,7 @@ def main():
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("file", type=Path, nargs="+", help="file/folder path")
+    parser.add_argument("file", nargs="+", help="file/folder path")
     parser.add_argument("--ftime", help="format time, now by default.")
     parser.add_argument("-r", "--recursive", action="store_true")
 
@@ -57,7 +58,7 @@ def main():
     # print(args)
     # return
 
-    items: Sequence[Path] = args.file
+    items: Sequence[str] = args.file
     ftime: str | None = args.ftime
     is_recursive: bool = args.recursive
     only_file: bool = args.only_file
@@ -68,16 +69,8 @@ def main():
         print("Invalid time format.")
         return
 
-    paths: Iterable[Path]
-    if is_recursive:
-        paths = chain(items, *(p.rglob("*") for p in items))
-    else:
-        paths = items
-
-    if only_file:
-        paths = filter(lambda p: p.is_file(), paths)
-    elif only_dir:
-        paths = filter(lambda p: p.is_dir(), paths)
+    paths = glob_paths(items, is_recursive, only_file=only_file, only_dir=only_dir)
+    paths = map(Path, paths)
 
     s, c = set_utime(paths, timestamp)
     print(f"\rDone: {s}/{c}")

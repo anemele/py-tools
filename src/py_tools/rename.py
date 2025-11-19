@@ -6,34 +6,13 @@ import hashlib
 import random
 import string
 from functools import wraps
-from glob import iglob
-from itertools import chain
-from os.path import isdir, isfile
 from pathlib import Path
-from typing import Callable, Iterable, Literal, Optional, Sequence
+from typing import Callable, Literal, Optional, Sequence
+
+from ._common import glob_paths
 
 
-def _glob(files: Iterable[str], only_file: bool, only_dir: bool) -> Iterable[Path]:
-    # print(f"_glob: {files=}, {only_file=}, {only_dir=}")
-
-    if only_file and only_dir:
-        yield from ()
-        return
-
-    fs = chain.from_iterable(map(iglob, files))
-    if only_file:
-        fs = filter(isfile, fs)
-    if only_dir:
-        fs = filter(isdir, fs)
-
-    yield from map(Path, fs)
-
-
-def _inform(
-    old: str | Path,
-    new: str | Path,
-    msg: str = "done",
-):
+def _inform(old: str | Path, new: str | Path, msg: str = "done"):
     print(f"{msg}: {old} --> {new}")
 
 
@@ -178,8 +157,9 @@ def main():
     arg_ptn_remove_prefix: Optional[str] = args.remove_prefix
     arg_ptn_remove_suffix: Optional[str] = args.remove_suffix
 
-    # get file list
-    fs = _glob(arg_path, arg_only_file, arg_only_dir)
+    # get path list
+    paths = glob_paths(arg_path, only_file=arg_only_file, only_dir=arg_only_dir)
+    paths = map(Path, paths)
 
     # match pattern
     # if arg_ptn_random:
@@ -187,26 +167,26 @@ def main():
     #         rename_random(f)
     # elif arg_ptn_lower:
     if arg_ptn_lower:
-        for f in fs:
-            rename_lower(f)
+        for path in paths:
+            rename_lower(path)
     elif arg_ptn_upper:
-        for f in fs:
-            rename_upper(f)
+        for path in paths:
+            rename_upper(path)
     elif arg_ptn_hashsum is not None:
-        for f in fs:
-            rename_hashsum(f, arg_ptn_hashsum)
+        for path in paths:
+            rename_hashsum(path, arg_ptn_hashsum)
     elif arg_ptn_add_prefix is not None:
-        for f in fs:
-            rename_add_prefix(f, arg_ptn_add_prefix)
+        for path in paths:
+            rename_add_prefix(path, arg_ptn_add_prefix)
     elif arg_ptn_add_suffix is not None:
-        for f in fs:
-            rename_add_suffix(f, arg_ptn_add_suffix)
+        for path in paths:
+            rename_add_suffix(path, arg_ptn_add_suffix)
     elif arg_ptn_remove_prefix is not None:
-        for f in fs:
-            rename_remove_prefix(f, arg_ptn_remove_prefix)
+        for path in paths:
+            rename_remove_prefix(path, arg_ptn_remove_prefix)
     elif arg_ptn_remove_suffix is not None:
-        for f in fs:
-            rename_remove_suffix(f, arg_ptn_remove_suffix)
+        for path in paths:
+            rename_remove_suffix(path, arg_ptn_remove_suffix)
     else:
-        for f in fs:
-            rename_random(f)
+        for path in paths:
+            rename_random(path)

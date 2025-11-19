@@ -6,12 +6,10 @@
 
 # This bug is fixed in 3.12.2
 
-import glob
 import os
 import time
-from itertools import chain
 
-from ._common import human_readable_size
+from ._common import glob_paths, human_readable_size
 
 
 def stat_file(path: str) -> str:
@@ -35,9 +33,8 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("file", type=str, nargs="+", help="")
+    parser.add_argument("path", type=str, nargs="+", help="")
     args = parser.parse_args()
 
-    files = chain.from_iterable(map(glob.iglob, args.file))
-    for file in files:
-        print(stat_file(file))
+    for path in glob_paths(args.path):
+        print(stat_file(path))

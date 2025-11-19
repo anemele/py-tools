@@ -27,7 +27,8 @@ from hashlib import sha256
 from itertools import cycle, starmap
 from operator import xor
 from pathlib import Path
-from typing import Iterable, Sequence
+
+from ._common import glob_paths
 
 SEED = "cfk"
 
@@ -110,12 +111,6 @@ def _parse_encrypt_name(name: str, *, b64: MyBase64) -> tuple[str, bytes]:
     return _xor_bytes(n, key).decode(), key
 
 
-def _glob_files(patterns: Sequence[str]) -> Iterable[Path]:
-    cwd = Path()
-    for pattern in patterns:
-        yield from cwd.glob(pattern)
-
-
 def encrypt_file(path: Path, b64: MyBase64) -> Path | None:
     key = _random_key()
     new_name = _get_encrypt_name(path.name, key, b64=b64)
@@ -154,7 +149,8 @@ def main():
     args = parser.parse_args()
     # print(args)
 
-    paths = _glob_files(args.path)
+    paths = glob_paths(args.path)
+    paths = map(Path, paths)
 
     if args.glob:
         for path in paths:
