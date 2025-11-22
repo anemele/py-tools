@@ -66,6 +66,7 @@ class MyBase64:
         return base64.b64decode(
             x + b"=" * (4 - len(x) % 4),
             altchars=self.__altchars,
+            validate=True,
         )
 
 
@@ -114,8 +115,8 @@ def _parse_encrypt_name(name: str, *, b64: MyBase64) -> tuple[str, bytes]:
 def encrypt_file(path: Path, b64: MyBase64) -> Path | None:
     key = _random_key()
     new_name = _get_encrypt_name(path.name, key, b64=b64)
-    _replace_file_head(path, key)
     new_path = path.with_name(new_name)
+    _replace_file_head(path, key)
     path.rename(new_path)
     return new_path
 
@@ -126,8 +127,8 @@ def decrypt_file(path: Path, b64: MyBase64) -> Path | None:
     except ValueError as e:
         print(f"[ERROR] {e}")
         return None
-    _replace_file_head(path, key)
     new_path = path.with_name(new_name)
+    _replace_file_head(path, key)
     path.rename(new_path)
     return new_path
 
