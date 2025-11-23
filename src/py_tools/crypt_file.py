@@ -63,11 +63,19 @@ class MyBase64:
 
     def decode(self, data: str) -> bytes:
         x = data.translate(self.__trans_table_d).encode()
-        return base64.b64decode(
-            x + b"=" * (4 - len(x) % 4),
-            altchars=self.__altchars,
-            validate=True,
-        )
+        # 3个8比特分成4个6比特
+        # 去除结尾的=剩余长度一定是 4n 4n-1 4n-2
+        # 也就是 4n 4n+3 4n+2
+        match len(x) % 4:
+            case 0:
+                pass
+            case 3:
+                x += b"="
+            case 2:
+                x += b"=="
+            case 1:
+                raise ValueError("invalid base64 string")
+        return base64.b64decode(x, altchars=self.__altchars, validate=True)
 
 
 def _xor_bytes(b: bytes, k: bytes) -> bytes:
@@ -122,11 +130,7 @@ def encrypt_file(path: Path, b64: MyBase64) -> Path | None:
 
 
 def decrypt_file(path: Path, b64: MyBase64) -> Path | None:
-    try:
-        new_name, key = _parse_encrypt_name(path.name, b64=b64)
-    except ValueError as e:
-        print(f"[ERROR] {e}")
-        return None
+    new_name, key = _parse_encrypt_name(path.name, b64=b64)
     new_path = path.with_name(new_name)
     _replace_file_head(path, key)
     path.rename(new_path)
@@ -161,7 +165,11 @@ def main():
     b64 = MyBase64(args.seed)
     fn = encrypt_file if args.encrypt else decrypt_file
     for path in paths:
-        new_name = fn(path, b64)
+        try:
+            new_name = fn(path, b64)
+        except Exception as e:
+            print(f"[ERROR] {e}")
+            continue
         if new_name is None:
             continue
         print(f"[OK] {path} => {new_name}")
