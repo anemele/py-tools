@@ -6,22 +6,24 @@ import hashlib
 import random
 import re
 import string
+from enum import StrEnum
 from functools import partial
 from pathlib import Path
-from typing import Callable, Literal, Optional, Sequence
+from typing import Callable, Sequence
 
 from ._common import glob_paths
 
 type RenameFunc = Callable[[Path], Path]
-ToWhat = Literal[
-    "random",
-    "lower",
-    "upper",
-    "md5",
-    "sha1",
-    "sha256",
-    "no-ext",
-]
+
+
+class ToWhat(StrEnum):
+    RANDOM = "random"
+    LOWER = "lower"
+    UPPER = "upper"
+    MD5 = "md5"
+    SHA1 = "sha1"
+    SHA256 = "sha256"
+    NO_EXT = "no-ext"
 
 
 def rename_random(path: Path) -> Path:
@@ -57,47 +59,57 @@ def rename_remove_ext(path: Path) -> Path:
 
 
 def wrap(arg: ToWhat | str) -> RenameFunc:
+    try:
+        arg = ToWhat(arg)
+    except ValueError:
+        # substitute
+        if not arg.startswith("s/") or not arg.endswith("/"):
+            raise ValueError(f"substitute expr {arg} not match s/str/repl/")
+
+        s = arg.removeprefix("s/").removesuffix("/").split("/")
+        if len(s) != 2:
+            raise ValueError(f"substitute expr {arg} not match s/str/repl/")
+        p, r = s
+
+        try:
+            sub = re.compile(p).sub
+        except re.error as e:
+            raise ValueError(f"invalid reg expr {arg}") from e
+
+        def f(path: Path):
+            return path.with_stem(sub(r, path.stem))
+
+        return f
+
+    t = ToWhat
     match arg:
-        case "random":
+        case t.RANDOM:
             return rename_random
-        case "lower":
+        case t.LOWER:
             return rename_lower
-        case "upper":
+        case t.UPPER:
             return rename_upper
-        case "md5" | "sha1" | "sha256":
+        case t.MD5 | t.SHA1 | t.SHA256:
             return partial(rename_hashsum, alg=arg)
-        case "no-ext":
+        case t.NO_EXT:
             return rename_remove_ext
         case _:
-            # substitute
-            if not arg.startswith("s/") or not arg.endswith("/"):
-                raise ValueError(f"substitute expr {arg} not match s/str/repl/")
-
-            s = arg.removeprefix("s/").removesuffix("/").split("/")
-            if len(s) != 2:
-                raise ValueError(f"substitute expr {arg} not match s/str/repl/")
-            p, r = s
-
-            try:
-                sub = re.compile(p).sub
-            except re.error as e:
-                raise ValueError(f"invalid reg expr {arg}") from e
-
-            def f(path: Path):
-                return path.with_stem(sub(r, path.stem))
-
-            return f
+            # should never reach here
+            raise ValueError(f"unknown to-what {arg}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        prog=None,
         description=__doc__,
         formatter_class=argparse.RawTextHelpFormatter,
     )
 
     parser.add_argument("path", nargs="+", help="file or directory, glob is supported")
-    parser.add_argument("--to", help="|".join(ToWhat.__args__) + "| s/str/repl/")
+    parser.add_argument(
+        "--to",
+        required=True,
+        help=" | ".join(m.value for m in ToWhat) + " | s/str/repl/",
+    )
     parser.add_argument("--dry-run", action="store_true", default=False)
 
     # filter
@@ -109,13 +121,13 @@ def main():
     args = parser.parse_args()
 
     arg_path: Sequence[str] = args.path
-    arg_to: Optional[ToWhat | str] = args.to
+    arg_to: ToWhat | str = args.to
     dry_run: bool = args.dry_run
     only_file: bool = args.only_file
     only_dir: bool = args.only_dir
 
     try:
-        rename_func = wrap(arg_to or "random")
+        rename_func = wrap(arg_to)
     except ValueError as e:
         print(f"[ERROR] {e}")
         return
