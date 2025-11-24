@@ -70,10 +70,10 @@ def wrap(arg: ToWhat | str) -> RenameFunc:
             return rename_remove_ext
         case _:
             # substitute
-            if not arg.startswith("s/"):
+            if not arg.startswith("s/") or not arg.endswith("/"):
                 raise ValueError(f"substitute mode: {arg}")
 
-            _, *s = arg.split("/")
+            s = arg.removeprefix("s/").removesuffix("/").split("/")
             if len(s) != 2:
                 raise ValueError(f"substitute mode: {arg}")
             p, r = s
@@ -92,7 +92,7 @@ def main():
     )
 
     parser.add_argument("path", nargs="+", help="file or directory, glob is supported")
-    parser.add_argument("--to", help="|".join(ToWhat.__args__) + "| s/str/repl")
+    parser.add_argument("--to", help="|".join(ToWhat.__args__) + "| s/str/repl/")
     parser.add_argument("--dry-run", action="store_true", default=False)
 
     # filter
@@ -112,7 +112,7 @@ def main():
     try:
         rename_func = wrap(arg_to or "random")
     except ValueError as e:
-        print(e)
+        print(f"[ERROR] {e}")
         return
 
     # get path list
@@ -124,6 +124,12 @@ def main():
         if new_path.exists():
             print(f"[SKIP] exists {new_path}")
         else:
-            if not dry_run:
+            if dry_run:
+                print(f"[DRY-RUN] {path} -> {new_path}")
+                continue
+            try:
                 path.rename(new_path)
-            print(f"[DONE] {path} -> {new_path}")
+            except OSError as e:
+                print(f"[ERROR] {e}")
+            else:
+                print(f"[DONE] {path} -> {new_path}")
