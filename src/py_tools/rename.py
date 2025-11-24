@@ -147,11 +147,8 @@ def main():
             print(f"[DRY-RUN] {path} -> {new_path}")
             continue
 
-        if new_path == path:
-            print(f"[SKIP] exists {new_path}")
-            continue
-
         try:
+            # rename even if be the same
             path.rename(new_path)
         except OSError as e:
             print(f"[ERROR] {e}")
