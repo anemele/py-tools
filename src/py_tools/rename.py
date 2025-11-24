@@ -71,15 +71,20 @@ def wrap(arg: ToWhat | str) -> RenameFunc:
         case _:
             # substitute
             if not arg.startswith("s/") or not arg.endswith("/"):
-                raise ValueError(f"substitute mode: {arg}")
+                raise ValueError(f"substitute expr {arg} not match s/str/repl/")
 
             s = arg.removeprefix("s/").removesuffix("/").split("/")
             if len(s) != 2:
-                raise ValueError(f"substitute mode: {arg}")
+                raise ValueError(f"substitute expr {arg} not match s/str/repl/")
             p, r = s
 
+            try:
+                sub = re.compile(p).sub
+            except re.error as e:
+                raise ValueError(f"invalid reg expr {arg}") from e
+
             def f(path: Path):
-                return path.with_stem(re.sub(p, r, path.stem))
+                return path.with_stem(sub(r, path.stem))
 
             return f
 

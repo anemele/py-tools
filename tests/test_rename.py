@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from py_tools.rename import wrap
 
 
@@ -20,4 +22,14 @@ def test_wrap():
     assert wrap("s/x$//")(Path("a/b/cx.txt")) == Path("a/b/c.txt")
 
     assert wrap(r"s/\d//")(Path("a/b/abc123def.txt")) == Path("a/b/abcdef.txt")
-    assert wrap(r"s/[A-Za-z]/-/")(Path("a/b/123abc.txt")) == Path("a/b/123---.txt")
+    assert wrap("s/[A-Za-z]/-/")(Path("a/b/123abc.txt")) == Path("a/b/123---.txt")
+
+    with pytest.raises(ValueError, match="not match s/str/repl/"):
+        wrap("s/")
+        wrap("s//")
+        wrap("s/abc/")
+        wrap("s/abc/def")
+
+    with pytest.raises(ValueError, match="invalid reg expr"):
+        wrap("s/[a-z//")
+        wrap(r"s/*//")
