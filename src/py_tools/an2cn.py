@@ -21,9 +21,8 @@ str 经过测试是数字
 但是对于人民币模式还是要取舍，包括小数截取两位、舍去尾零等。
 """
 
-import argparse
 from functools import wraps
-from typing import Callable, Literal
+from typing import Callable, Literal, Sequence
 
 __all__ = ["convert", "Mode"]
 
@@ -46,7 +45,7 @@ UNIT_ORDER_LOW = ",十,百,千,万,十,百,千,亿,十,百,千,万,十,百,千".
 UNIT_ORDER_UP = ",拾,佰,仟,万,拾,佰,仟,亿,拾,佰,仟,万,拾,佰,仟".split(",")
 
 # low 小写数字，up 大写数字，rmb 人民币大写，direct 直接转化
-type Mode = Literal["low", "up", "rmb", "direct"]
+Mode = Literal["low", "up", "rmb", "direct"]
 
 
 def __direct_convert(data: str) -> str:
@@ -218,15 +217,19 @@ def convert(number: str, mode: Mode = "low") -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawTextHelpFormatter
+    )
     parser.add_argument("number", nargs="+", type=str, help="阿拉伯数字")
-    parser.add_argument("-m", "--mode", type=str, default="low")
+    parser.add_argument("-m", "--mode", choices=Mode.__args__, default="low")
 
     args = parser.parse_args()
     # print(args)
     # return
 
-    number: list[str] = args.number
+    number: Sequence[str] = args.number
     mode: Mode = args.mode
 
     print(f"MODE: {mode}")
