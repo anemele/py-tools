@@ -30,7 +30,6 @@ lse = "py_tools.lse:main"
 cf = "py_tools.crypt_file:main"
 
 # python related
-pyenv = "py_tools.pyenv:main"
 pyver = "py_tools.pyver:main"
 
 [build-system]
