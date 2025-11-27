@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.12
 """Get Python releases version and date"""
 
-import gzip
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -71,7 +70,10 @@ def get_ver_date() -> Iterable[VerDate]:
 
     # v3.12 sets "Accept-Encoding:gzip, deflate"
     # Here needs decompress first.
-    html = gzip.decompress(data).decode()
+    # html = gzip.decompress(data).decode()
+
+    # NOTE: It seems no need to decompress now.
+    html = data.decode()
 
     matches = re.findall(
         r'>Python (\d(?:\.\d+){2})[\s\S]+?"release-date">(\w+\.? \d{1,2}, \d{4})',
