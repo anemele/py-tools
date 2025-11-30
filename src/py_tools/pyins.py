@@ -6,7 +6,7 @@ import tomllib
 from pathlib import Path
 from typing import Mapping, Sequence
 
-PY_SCRIPT_INSTALL_PATH = Path.home().joinpath("bin/pyins")
+PY_SCRIPT_INSTALL_PATH = Path.home().joinpath("bin/pys")
 PY_SCRIPT_INSTALL_PATH.mkdir(exist_ok=True)
 
 # I do not know OS other than Linux, so set all as `"bin", ""`

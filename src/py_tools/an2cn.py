@@ -77,19 +77,20 @@ def __integer_convert(data: str, mode: Mode) -> str:
     if len_integer_data > len(unit_list):
         raise ValueError(f"超出数据范围，最长支持 {len(unit_list)} 位")
 
-    ret = ""
+    ret = []
     for i, d in enumerate(data):
         if d != "0":
-            ret += numeral_map[d] + unit_list[len_integer_data - i - 1]
+            ret.extend((numeral_map[d], unit_list[len_integer_data - i - 1]))
             continue
         if (len_integer_data - i - 1) % 4 == 0:
-            ret += numeral_map[d] + unit_list[len_integer_data - i - 1]
+            ret.extend((numeral_map[d], unit_list[len_integer_data - i - 1]))
 
         if i != 0 and ret[-1] != "零":
-            ret += numeral_map[d]
+            ret.append(numeral_map[d])
 
     ret = (
-        ret.replace("零零", "零")
+        "".join(ret)
+        .replace("零零", "零")
         .replace("零万", "万")
         .replace("零亿", "亿")
         .replace("亿万", "亿")
