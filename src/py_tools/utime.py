@@ -9,7 +9,6 @@ os.utime(path, time: (atime, mtime)=None, *, ...)
 """
 
 import os
-import sys
 import time
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -31,12 +30,12 @@ def set_utime(paths: Iterable[Path], timestamp: float) -> tuple[int, int]:
     count = 0
     succ = 0
     for succ, path in enumerate(paths, 1):
-        sys.stdout.write(f"\rSetting {path}")
+        print(f" + {path}")
         try:
             os.utime(path, (timestamp, timestamp))
             count += 1
         except Exception as e:
-            print(f"\r{e}")
+            print(f"[ERROR] {e}")
     return succ, count
 
 
@@ -73,4 +72,4 @@ def main():
     paths = map(Path, paths)
 
     s, c = set_utime(paths, timestamp)
-    print(f"\rDone: {s}/{c}")
+    print(f"Done {s}/{c}")
