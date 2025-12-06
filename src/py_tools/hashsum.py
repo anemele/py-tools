@@ -1,4 +1,7 @@
-#!/usr/bin/env python3.12
+"""Calculate file hashsum.
+
+Given file path, or read from stdin.
+Glob supported."""
 
 import argparse
 import hashlib
@@ -26,10 +29,6 @@ def hash_file(alg: str, file: str) -> HashLine:
 
 
 def check_sum(alg: str, file: str) -> None:
-    if not op.exists(file):
-        print(f"not found SUM file: {file}")
-        return
-
     with open(file) as fp:
         for line in fp:
             tmp = line.strip().split()
@@ -49,8 +48,8 @@ def check_sum(alg: str, file: str) -> None:
 
 def gen_main(alg):
     def main():
-        parser = argparse.ArgumentParser()
-        parser.add_argument("file", nargs="+", help="files to hash")
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument("file", nargs="*", help="files to hash")
         parser.add_argument(
             "--check", "-c", action="store_true", help="check a hash sum file"
         )
@@ -61,7 +60,11 @@ def gen_main(alg):
 
         if len(files) == 0 and not sys.stdin.isatty():
             files = sys.stdin.read().splitlines()
-        files = glob_paths(files)
+        if len(files) == 0:
+            parser.print_help()
+            parser.exit(1)
+
+        files = glob_paths(files, only_file=True)
 
         if is_check:
             for file in files:
