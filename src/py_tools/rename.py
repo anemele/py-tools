@@ -49,16 +49,23 @@ def rename_substitute(subexpr: str) -> RenameFunc:
 
 
 class ToWhat(StrEnum):
+    # generate a random name consisting of [a-z0-9]
     RANDOM = "random"
+    # case related
     LOWER = "lower"
     UPPER = "upper"
+    SWAPCASE = "swap"
+    CAPITALIZE = "caps"
+    TITLE = "title"
+    # hashsum related
     MD5 = "md5"
     SHA1 = "sha1"
     SHA256 = "sha256"
+    # remove extension name
     NO_EXT = "no-ext"
 
 
-def dispatch(arg: ToWhat | str) -> RenameFunc:
+def dispatch(arg: str) -> RenameFunc:
     try:
         arg = ToWhat(arg)
     except ValueError:
@@ -68,15 +75,19 @@ def dispatch(arg: ToWhat | str) -> RenameFunc:
     match arg:
         case t.RANDOM:
             return rename_random
-        case t.LOWER:
+
+        case t.LOWER | t.UPPER | t.SWAPCASE | t.CAPITALIZE | t.TITLE:
+            case_method_map = {
+                t.LOWER: str.lower,
+                t.UPPER: str.upper,
+                t.SWAPCASE: str.swapcase,
+                t.CAPITALIZE: str.capitalize,
+                t.TITLE: str.capitalize,
+            }
+            case_method = case_method_map[arg]
 
             def f(path: Path) -> Path:
-                return path.with_name(path.name.lower())
-
-        case t.UPPER:
-
-            def f(path: Path) -> Path:
-                return path.with_name(path.name.upper())
+                return path.with_name(case_method(path.name))
 
         case t.MD5 | t.SHA1 | t.SHA256:
 
@@ -105,12 +116,12 @@ def main():
     )
 
     parser.add_argument("path", nargs="+", help="file or directory, glob is supported")
-    parser.add_argument(
-        "--to",
-        required=True,
-        help=" | ".join(m.value for m in ToWhat) + " | s/str/repl/",
-    )
     parser.add_argument("--dry-run", action="store_true", default=False)
+
+    # method
+    methods = parser.add_mutually_exclusive_group(required=True)
+    methods.add_argument("-t", "--to", help=" | ".join(m.value for m in ToWhat))
+    methods.add_argument("-s", "--sub", help="s/str/repl/    regex is supported")
 
     # filter
     filters = parser.add_mutually_exclusive_group()
@@ -119,15 +130,18 @@ def main():
 
     # parse args
     args = parser.parse_args()
+    # print(args)
+    # return
 
     arg_path: Sequence[str] = args.path
-    arg_to: ToWhat | str = args.to
     dry_run: bool = args.dry_run
+    to: str | None = args.to
+    sub: str | None = args.sub
     only_file: bool = args.only_file
     only_dir: bool = args.only_dir
 
     try:
-        rename_func = dispatch(arg_to)
+        rename_func = dispatch(to or sub or "")
     except ValueError as e:
         print(f"[ERROR] {e}")
         return
