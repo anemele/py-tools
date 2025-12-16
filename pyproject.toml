@@ -11,6 +11,7 @@ dependencies = []
 # converters
 an2cn = "py_tools.an2cn:main"
 ssn = "py_tools.ssn:main"
+cvtnum = "py_tools.numsys:main"
 
 # hashsum aliases
 md5sum = "py_tools.hashsum:md5"
