@@ -29,8 +29,8 @@ def glob_paths(
         glob.iglob(pattern, recursive=recursive) for pattern in patterns
     )
     if only_file:
-        paths = filter(isfile, paths)
+        return filter(isfile, paths)
     elif only_dir:
-        paths = filter(isdir, paths)
-
-    return paths
+        return filter(isdir, paths)
+    else:
+        return paths

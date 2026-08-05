@@ -66,14 +66,13 @@ def rename_convert(s: str) -> RenameFunc:
             return rename_random
 
         case t.LOWER | t.UPPER | t.SWAPCASE | t.CAPITALIZE | t.TITLE:
-            case_method_map = {
+            case_method = {
                 t.LOWER: str.lower,
                 t.UPPER: str.upper,
                 t.SWAPCASE: str.swapcase,
                 t.CAPITALIZE: str.capitalize,
                 t.TITLE: str.capitalize,
-            }
-            case_method = case_method_map[s]
+            }[s]
 
             def f(path: Path) -> Path:
                 return path.with_name(case_method(path.name))

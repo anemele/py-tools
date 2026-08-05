@@ -14,16 +14,16 @@ ssn = "py_tools.ssn:main"
 cvtnum = "py_tools.numsys:main"
 
 # hashsum aliases
-md5sum = "py_tools.hashsum:md5"
-sha1sum = "py_tools.hashsum:sha1"
-sha224sum = "py_tools.hashsum:sha224"
-sha256sum = "py_tools.hashsum:sha256"
-sha384sum = "py_tools.hashsum:sha384"
-sha512sum = "py_tools.hashsum:sha512"
+# md5sum = "py_tools.hashsum:md5"
+# sha1sum = "py_tools.hashsum:sha1"
+# sha224sum = "py_tools.hashsum:sha224"
+# sha256sum = "py_tools.hashsum:sha256"
+# sha384sum = "py_tools.hashsum:sha384"
+# sha512sum = "py_tools.hashsum:sha512"
 
 # file system
 rn = "py_tools.rename:main"
-stat = "py_tools.stat:main"
+# stat = "py_tools.stat:main"
 subrun = "py_tools.subrun:main"
 utime = "py_tools.utime:main"
 du = "py_tools.du:main"
