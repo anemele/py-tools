@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.12
 """rename file or directory with some pattern"""
 
 import argparse
@@ -6,9 +5,9 @@ import hashlib
 import random
 import re
 import string
+from collections.abc import Callable, Sequence
 from enum import StrEnum
 from pathlib import Path
-from typing import Callable, Sequence
 
 from ._common import glob_paths
 
@@ -71,7 +70,7 @@ def rename_convert(s: str) -> RenameFunc:
                 t.UPPER: str.upper,
                 t.SWAPCASE: str.swapcase,
                 t.CAPITALIZE: str.capitalize,
-                t.TITLE: str.capitalize,
+                t.TITLE: str.title,
             }[s]
 
             def f(path: Path) -> Path:

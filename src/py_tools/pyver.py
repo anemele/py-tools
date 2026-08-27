@@ -1,10 +1,10 @@
-#!/usr/bin/env python3.12
 """Get Python releases version and date"""
 
 import re
+from collections.abc import Iterable  # v3.11+
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Iterable, Self  # v3.11+
+from typing import Self
 from urllib.request import urlopen
 
 url = "https://www.python.org/downloads/"

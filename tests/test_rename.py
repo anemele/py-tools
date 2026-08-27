@@ -30,9 +30,9 @@ def test_convert():
     assert rename_convert("lower")(Path("a/b/aBs.Txt")) == Path("a/b/abs.txt")
     assert rename_convert("upper")(Path("a/b/aBs.Txt")) == Path("a/b/ABS.TXT")
     assert rename_convert("swap")(Path("a/b/aBs.Txt")) == Path("a/b/AbS.tXT")
-    assert rename_convert("caps")(Path("a/b/aBs.Txt")) == Path("a/b/ABs.Txt")
+    assert rename_convert("caps")(Path("a/b/aBs.Txt")) == Path("a/b/Abs.txt")
     assert rename_convert("title")(Path("a/b/aBs-abc_def.txt")) == Path(
-        "a/b/ABs-Abc_def.Txt"
+        "a/b/Abs-Abc_Def.Txt"
     )
 
     assert rename_convert("no-ext")(Path("a/b/c.txt")) == Path("a/b/c")

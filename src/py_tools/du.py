@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
-
 """Disk usage? I don't know."""
 
 import argparse
 import os
 import os.path as osp
 import time
-from typing import Iterable, Set
+from collections.abc import Iterable
 
 from ._common import human_readable_size
 
@@ -34,7 +32,7 @@ def count(directory: str, recursive: bool) -> Iterable[T_ITEM]:
         yield from map(count_root, tmp)
 
 
-def trim_hardlinks_from_root(inode_set: Set[int], root: T_OS_WALKER) -> T_OS_WALKER:
+def trim_hardlinks_from_root(inode_set: set[int], root: T_OS_WALKER) -> T_OS_WALKER:
     r, d, f = root
     new_f = []
     for i in f:

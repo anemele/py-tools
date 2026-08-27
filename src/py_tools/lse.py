@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.12
 
 """List file extensions in a directory."""
 

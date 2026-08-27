@@ -21,10 +21,11 @@ str 经过测试是数字
 但是对于人民币模式还是要取舍，包括小数截取两位、舍去尾零等。
 """
 
+from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Callable, Literal, Sequence
+from typing import Literal
 
-__all__ = ["convert", "Mode"]
+__all__ = ["Mode", "convert"]
 
 
 # 阿拉伯数字
@@ -41,8 +42,42 @@ NUMBER_UP_MAP = dict(zip(NUMBER_ARABIC, NUMBER_UP))
 # 中文单位
 UNIT_LOW = {10: "十", 100: "百", 1000: "千", 10000: "万", 100000000: "亿"}
 
-UNIT_ORDER_LOW = ",十,百,千,万,十,百,千,亿,十,百,千,万,十,百,千".split(",")
-UNIT_ORDER_UP = ",拾,佰,仟,万,拾,佰,仟,亿,拾,佰,仟,万,拾,佰,仟".split(",")
+UNIT_ORDER_LOW = [
+    "",
+    "十",
+    "百",
+    "千",
+    "万",
+    "十",
+    "百",
+    "千",
+    "亿",
+    "十",
+    "百",
+    "千",
+    "万",
+    "十",
+    "百",
+    "千",
+]
+UNIT_ORDER_UP = [
+    "",
+    "拾",
+    "佰",
+    "仟",
+    "万",
+    "拾",
+    "佰",
+    "仟",
+    "亿",
+    "拾",
+    "佰",
+    "仟",
+    "万",
+    "拾",
+    "佰",
+    "仟",
+]
 
 # low 小写数字，up 大写数字，rmb 人民币大写，direct 直接转化
 Mode = Literal["low", "up", "rmb", "direct"]

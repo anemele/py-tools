@@ -3,7 +3,7 @@
 import glob
 from itertools import chain
 from os.path import isdir, isfile
-from typing import Iterable
+from collections.abc import Iterable
 
 
 def human_readable_size(size_of_bytes: int) -> str:

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.12
-
 """Auto execute command util success.
 
 while <cond>:
@@ -7,8 +5,8 @@ while <cond>:
 
 import argparse
 import subprocess
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Sequence
 
 DEFAULT_RETURN_CODE = 0
 

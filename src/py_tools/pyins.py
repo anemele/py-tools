@@ -4,7 +4,7 @@ import platform
 import shutil
 import tomllib
 from pathlib import Path
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 
 PY_SCRIPT_INSTALL_PATH = Path.home().joinpath("bin/pys")
 PY_SCRIPT_INSTALL_PATH.mkdir(exist_ok=True)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.12
 
 # There is a bug using Python 3.12.0, 3.12.1
 # It returns negative value of a/c/mtime of "System Volume Information"

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 """设置文件/目录的访问时间和修改时间
 
@@ -11,7 +10,7 @@ os.utime(path, time: (atime, mtime)=None, *, ...)
 import os
 import time
 from pathlib import Path
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 from ._common import glob_paths
 
